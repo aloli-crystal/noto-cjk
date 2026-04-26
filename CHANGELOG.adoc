@@ -1,0 +1,40 @@
+= Changelog
+:toc: left
+:toc-title: Versions
+:toclevels: 2
+
+== v0.1.0 — 2026-04-26
+
+First public release. CJK glyph coverage for Crystal projects via
+on-demand download of Noto Sans CJK fonts.
+
+* **`CrystalNotoCJK::Cache`** module : per-variant download,
+  inspection, and purge.
+* **API** : `Cache.pull(variants:, source:, system:)`,
+  `Cache.path(variant)`, `Cache.populated?(variant)`,
+  `Cache.installed`, `Cache.purge`.
+* **High-level wrappers** : `CrystalNotoCJK.font_path` (any
+  installed variant), `CrystalNotoCJK.font_path(:jp)` (specific).
+* **CLI** `bin/crystal-noto-cjk` with sub-commands `pull`,
+  `info`, `purge` and short/long flags `-V/--variant`,
+  `-s/--source`, `--system`, `-v/--version`, `-h/--help`.
+* **Four variants supported** : `:sc` (Simplified Chinese,
+  default), `:tc` (Traditional Chinese), `:jp` (Japanese),
+  `:kr` (Korean), or `--variant all` for everything.
+* **Custom mirror support** via `--source URL` — point at any
+  static file server that mirrors the upstream `Sans/OTF/` tree.
+* **XDG-conventional cache path** with macOS variant +
+  `--system` override + `CRYSTAL_NOTO_CJK_CACHE_DIR` env var.
+* **Idempotent** — re-running `pull` on already-cached variants
+  is a no-op.
+* **Atomic downloads** — tmp-then-rename so a partial download
+  never leaves a corrupt OTF in the cache.
+* **No embedded payload** — the shard itself is tiny (no fonts
+  shipped). Each variant is ~16-20 MB and downloaded only when
+  the user explicitly asks for it.
+* **MIT** for the Crystal code ; cached fonts retain Noto's
+  SIL OFL v1.1 licence.
+* Bilingual README (EN + FR), CI, ameba lint.
+* **12 unit tests, all green** (network-free path coverage —
+  the actual `pull` is intentionally NOT exercised in CI to
+  avoid pulling ~16 MB on every run).

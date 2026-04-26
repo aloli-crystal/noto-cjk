@@ -1,0 +1,208 @@
+= crystal-noto-cjk
+:toc: macro
+:toclevels: 2
+
+Couverture des glyphes CJK pour Crystal — fournit les polices
+Noto Sans CJK (4 variantes : SC, TC, JP, KR) via un cache
+disque optionnel. Crystal pur, sans payload embarqué (chaque
+OTF pèse ~16-20 Mo, beaucoup trop lourd pour être livré dans
+chaque binaire dépendant).
+
+🇬🇧 Read this in English: link:README.adoc[README.adoc]
+
+Conçu comme un filet de sécurité pour les bibliothèques
+aval de rendu PDF / image qui doivent gérer des caractères
+CJK isolés sans embarquer plusieurs Mo de polices pour les
+utilisateurs qui n'en croisent jamais.
+
+toc::[]
+
+== Pourquoi
+
+DejaVu Sans (la police par défaut de `crystal-asciidoctor-pdf`)
+couvre Latin, Cyrillique, Grec, Hébreu, Arabe, Vietnamien…
+mais **pas** les idéogrammes CJK (日 本 中 国 大 韓 民 國 …).
+Tant que vous n'ajoutez pas de police CJK-capable, ces
+caractères ressortent en `?` (ou pire, en carrés tofu
+silencieux).
+
+Ce shard fournit la police manquante, à la demande, sans
+forcer chaque consommateur à embarquer 80 Mo de glyphes dont
+il n'a pas besoin.
+
+== Variantes
+
+Noto Sans CJK est livré en **quatre variantes régionales** qui
+partagent les mêmes codepoints Unicode mais dessinent les
+idéogrammes CJK Unifiés différemment selon la convention
+typographique :
+
+[cols="1,3"]
+|===
+| Variante | À utiliser quand
+
+| `:sc` (défaut)
+| Chinois Simplifié (Chine continentale). Couvre tous les
+  codepoints CJK Unified Ideographs — le choix mono-variante
+  le plus large. **À privilégier pour un filet de sécurité
+  générique.**
+
+| `:tc`
+| Chinois Traditionnel (Taïwan, Hong Kong).
+
+| `:jp`
+| Japonais (kanji + hiragana + katakana). À choisir si vos
+  documents sont rédigés en japonais.
+
+| `:kr`
+| Coréen (hangul + hanja).
+|===
+
+Vous pouvez installer plusieurs variantes en même temps. Le
+shard accepte n'importe quelle combinaison.
+
+== Installation
+
+[source,yaml]
+----
+dependencies:
+  crystal-noto-cjk:
+    github: aloli-crystal/crystal-noto-cjk
+    version: "~> 0.1"
+----
+
+La dépendance elle-même est minuscule (pas de polices
+embarquées) — les polices sont téléchargées dans le cache
+uniquement quand vous le demandez.
+
+== API (utilisation depuis votre application Crystal)
+
+[source,crystal]
+----
+require "crystal-noto-cjk"
+
+# === Premier setup ===
+# Télécharger le Chinois Simplifié (défaut, ≈ 16 Mo).
+CrystalNotoCJK::Cache.pull
+
+# Ou être explicite sur les variantes.
+CrystalNotoCJK::Cache.pull(variants: [:sc, :jp])
+
+# Ou tout télécharger (≈ 80 Mo au total).
+CrystalNotoCJK::Cache.pull(variants: CrystalNotoCJK::VARIANTS)
+
+# Utiliser un miroir privé.
+CrystalNotoCJK::Cache.pull(
+  variants: [:sc],
+  source: "https://nas.aloli.local/noto-cjk",
+)
+
+# Écrire dans le cache système (nécessite root).
+CrystalNotoCJK::Cache.pull(variants: [:sc], system: true)
+
+# === Inspection ===
+CrystalNotoCJK.populated?              # => true / false
+CrystalNotoCJK.font_path               # => "/Users/.../NotoSansCJKsc-Regular.otf" ou nil
+CrystalNotoCJK.font_path(:jp)          # => idem pour la variante JP
+CrystalNotoCJK::Cache.installed        # => [:sc, :jp]
+CrystalNotoCJK::Cache.dir              # => chemin du cache
+
+# === Usage typique en aval ===
+# (Par exemple avec crystal-asciidoctor-pdf v2.3.24.13+)
+if (cjk_font = CrystalNotoCJK.font_path)
+  theme.cjk_font_path = cjk_font
+end
+----
+
+== CLI
+
+[source,shell]
+----
+# Compiler le binaire une fois.
+shards build --release crystal-noto-cjk
+
+# Télécharger la variante Chinois Simplifié par défaut.
+crystal-noto-cjk pull
+
+# Télécharger Japonais uniquement.
+crystal-noto-cjk pull --variant jp
+
+# Télécharger Chinois Simplifié et Japonais.
+crystal-noto-cjk pull --variant sc,jp
+
+# Télécharger les 4 variantes (~ 80 Mo).
+crystal-noto-cjk pull --variant all
+
+# Utiliser un miroir personnalisé.
+crystal-noto-cjk pull --source https://votre.miroir/noto-cjk
+
+# Cache système.
+crystal-noto-cjk pull --system
+
+# Inspection.
+crystal-noto-cjk info
+# Emplacement : /Users/.../Library/Caches/crystal-noto-cjk
+# Variantes installées : sc, jp
+# Variantes disponibles : sc, tc, jp, kr
+
+# Vider.
+crystal-noto-cjk purge
+----
+
+=== Emplacement du cache
+
+[cols="1,3"]
+|===
+| OS / mode | Chemin par défaut
+
+| macOS (utilisateur)
+| `~/Library/Caches/crystal-noto-cjk/`
+
+| Linux/FreeBSD (utilisateur)
+| `$XDG_CACHE_HOME/crystal-noto-cjk/` (défaut `~/.cache/crystal-noto-cjk/`)
+
+| Tout (système via `--system`)
+| `/var/cache/crystal-noto-cjk/`
+
+| Tout (surcharge)
+| variable d'env `$CRYSTAL_NOTO_CJK_CACHE_DIR`
+|===
+
+=== Exigences pour un miroir privé
+
+La commande `pull` attend du miroir qu'il reproduise la
+disposition de fichiers Noto upstream :
+
+  <source>/SimplifiedChinese/NotoSansCJKsc-Regular.otf
+  <source>/TraditionalChinese/NotoSansCJKtc-Regular.otf
+  <source>/Japanese/NotoSansCJKjp-Regular.otf
+  <source>/Korean/NotoSansCJKkr-Regular.otf
+
+Un serveur de fichiers statiques hébergeant un clone de
+l'arborescence `Sans/OTF/` du repo
+https://github.com/notofonts/noto-cjk[notofonts/noto-cjk]
+suffit.
+
+== Attribution
+
+Noto Sans CJK © Google, Inc et Adobe Inc. **SIL Open Font
+License v1.1 (OFL)** — voir le repo amont
+https://github.com/notofonts/noto-cjk[notofonts/noto-cjk]
+pour le texte complet. Les fichiers de polices téléchargés
+dans votre cache conservent cette licence.
+
+== Récapitulatif des licences
+
+* **Code Crystal** : MIT, voir link:LICENSE[LICENSE]
+* **Fichiers de polices en cache** : Noto Sans CJK SIL OFL v1.1
+  (téléchargés à la demande, jamais embarqués)
+
+== Développement
+
+[source,shell]
+----
+shards install
+crystal spec
+bin/ameba
+crystal tool format src/ spec/
+----

@@ -1,0 +1,25 @@
+name: crystal-noto-cjk
+version: 0.1.0
+
+description: |
+  CJK glyph coverage for Crystal — provides Noto Sans CJK fonts
+  (4 variants : SC, TC, JP, KR) via an opt-in on-disk cache. Pure
+  Crystal, no embedded payload (each OTF weighs ~16-20 MB).
+  Designed as a fallback safety net for downstream PDF / image
+  rendering libraries that need to handle stray CJK characters.
+
+authors:
+  - Philippe Nénert <philippe@aloli.fr>
+
+license: MIT
+
+development_dependencies:
+  ameba:
+    github: crystal-ameba/ameba
+    version: "~> 1.6"
+
+targets:
+  crystal-noto-cjk:
+    main: src/cli.cr
+
+crystal: ">= 1.19.0"

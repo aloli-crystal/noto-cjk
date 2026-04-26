@@ -1,0 +1,46 @@
+= Journal des modifications
+:toc: left
+:toc-title: Versions
+:toclevels: 2
+
+== v0.1.0 — 2026-04-26
+
+Première version publique. Couverture des glyphes CJK pour les
+projets Crystal via téléchargement à la demande des polices
+Noto Sans CJK.
+
+* Module **`CrystalNotoCJK::Cache`** : téléchargement par
+  variante, inspection et purge.
+* **API** : `Cache.pull(variants:, source:, system:)`,
+  `Cache.path(variant)`, `Cache.populated?(variant)`,
+  `Cache.installed`, `Cache.purge`.
+* **Wrappers haut niveau** : `CrystalNotoCJK.font_path`
+  (n'importe quelle variante installée),
+  `CrystalNotoCJK.font_path(:jp)` (spécifique).
+* **CLI** `bin/crystal-noto-cjk` avec sous-commandes `pull`,
+  `info`, `purge` et drapeaux courts/longs `-V/--variant`,
+  `-s/--source`, `--system`, `-v/--version`, `-h/--help`.
+* **Quatre variantes supportées** : `:sc` (Chinois Simplifié,
+  défaut), `:tc` (Chinois Traditionnel), `:jp` (Japonais),
+  `:kr` (Coréen), ou `--variant all` pour tout.
+* **Support des miroirs privés** via `--source URL` — pointer
+  vers n'importe quel serveur de fichiers statiques qui
+  reproduit l'arborescence amont `Sans/OTF/`.
+* **Chemin XDG conventionnel** avec variante macOS +
+  override `--system` + variable d'env
+  `CRYSTAL_NOTO_CJK_CACHE_DIR`.
+* **Idempotent** — relancer `pull` sur des variantes déjà en
+  cache est sans effet.
+* **Téléchargements atomiques** — tmp puis rename, donc un
+  téléchargement partiel ne laisse jamais d'OTF corrompu dans
+  le cache.
+* **Aucun payload embarqué** — le shard lui-même est minuscule
+  (pas de polices livrées). Chaque variante fait ~16-20 Mo et
+  n'est téléchargée que lorsque l'utilisateur le demande
+  explicitement.
+* **MIT** pour le code Crystal ; les polices en cache
+  conservent la licence SIL OFL v1.1 de Noto.
+* README bilingue (EN + FR), CI, lint ameba.
+* **12 tests unitaires, tous verts** (couverture des chemins
+  sans réseau — le `pull` réel n'est intentionnellement PAS
+  exercé en CI pour éviter de tirer ~16 Mo à chaque run).
