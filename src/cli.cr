@@ -1,25 +1,25 @@
 require "option_parser"
-require "./crystal_noto_cjk"
+require "./noto_cjk"
 
-# crystal-noto-cjk CLI — manages the on-disk Noto Sans CJK cache.
+# noto-cjk CLI — manages the on-disk Noto Sans CJK cache.
 #
 # Examples (shell):
-#   $ crystal-noto-cjk pull                            # default variant = sc
-#   $ crystal-noto-cjk pull --variant jp               # Japanese only
-#   $ crystal-noto-cjk pull --variant sc,jp            # both
-#   $ crystal-noto-cjk pull --variant all              # all four (~80 MB)
-#   $ crystal-noto-cjk pull --source https://mirror/   # private mirror
-#   $ crystal-noto-cjk pull --system                   # /var/cache/...
-#   $ crystal-noto-cjk info                            # list installed
-#   $ crystal-noto-cjk purge                           # delete every variant
+#   $ noto-cjk pull                            # default variant = sc
+#   $ noto-cjk pull --variant jp               # Japanese only
+#   $ noto-cjk pull --variant sc,jp            # both
+#   $ noto-cjk pull --variant all              # all four (~80 MB)
+#   $ noto-cjk pull --source https://mirror/   # private mirror
+#   $ noto-cjk pull --system                   # /var/cache/...
+#   $ noto-cjk info                            # list installed
+#   $ noto-cjk purge                           # delete every variant
 
-source = CrystalNotoCJK::Cache::DEFAULT_SOURCE
+source = NotoCjk::Cache::DEFAULT_SOURCE
 system_cache = false
 variant_arg = "sc"
 
 parser = OptionParser.new do |p|
   p.banner = <<-BANNER
-    Usage : crystal-noto-cjk SOUS-COMMANDE [options]
+    Usage : noto-cjk SOUS-COMMANDE [options]
 
     Sous-commandes :
       pull          Télécharge la/les variante(s) Noto Sans CJK dans le cache
@@ -31,12 +31,12 @@ parser = OptionParser.new do |p|
 
   p.on("-V VARIANT", "--variant VARIANT", "Variante(s) à télécharger : sc, tc, jp, kr, all, ou liste séparée par des virgules (défaut : sc)") { |v| variant_arg = v }
   p.on("-s URL", "--source URL", "URL source (défaut : Noto upstream sur GitHub)") { |v| source = v }
-  p.on("--system", "Écrit dans le cache système (/var/cache/crystal-noto-cjk)") { system_cache = true }
+  p.on("--system", "Écrit dans le cache système (/var/cache/noto-cjk)") { system_cache = true }
 
   p.separator ""
   p.separator "Aide :"
   p.on("-v", "--version", "Afficher la version") do
-    puts "crystal-noto-cjk #{CrystalNotoCJK::VERSION}"
+    puts "noto-cjk #{NotoCjk::VERSION}"
     exit 0
   end
   p.on("-h", "--help", "Afficher l'aide") do
@@ -67,7 +67,7 @@ end
 # known set.
 def parse_variants(arg : String) : Array(Symbol)
   if arg.downcase == "all"
-    CrystalNotoCJK::VARIANTS
+    NotoCjk::VARIANTS
   else
     arg.split(',').map do |s|
       case s.strip.downcase
@@ -87,28 +87,28 @@ end
 case positional.first
 when "pull"
   variants = parse_variants(variant_arg)
-  unknown = variants - CrystalNotoCJK::VARIANTS
+  unknown = variants - NotoCjk::VARIANTS
   unless unknown.empty?
     STDERR.puts "Erreur : variante(s) inconnue(s) : #{unknown.map(&.to_s).join(", ")}"
     STDERR.puts "Variantes valides : sc, tc, jp, kr, all"
     exit 1
   end
-  target = CrystalNotoCJK::Cache.dir(system: system_cache)
+  target = NotoCjk::Cache.dir(system: system_cache)
   puts "Téléchargement vers : #{target}"
   puts "Source              : #{source}"
   puts "Variantes           : #{variants.map(&.to_s).join(", ")}"
   puts "Patientez (≈ 16-20 Mo par variante)..."
-  count = CrystalNotoCJK::Cache.pull(variants: variants, source: source, system: system_cache)
-  installed = CrystalNotoCJK::Cache.installed(system: system_cache)
+  count = NotoCjk::Cache.pull(variants: variants, source: source, system: system_cache)
+  installed = NotoCjk::Cache.installed(system: system_cache)
   puts "Téléchargé : #{count} nouvelle(s) variante(s) (cache total : #{installed.size} variante(s) — #{installed.map(&.to_s).join(", ")})"
 when "info"
-  installed = CrystalNotoCJK::Cache.installed(system: system_cache)
-  puts "Emplacement : #{CrystalNotoCJK::Cache.dir(system: system_cache)}"
+  installed = NotoCjk::Cache.installed(system: system_cache)
+  puts "Emplacement : #{NotoCjk::Cache.dir(system: system_cache)}"
   puts "Variantes installées : #{installed.empty? ? "(aucune)" : installed.map(&.to_s).join(", ")}"
-  puts "Variantes disponibles : #{CrystalNotoCJK::VARIANTS.map(&.to_s).join(", ")}"
+  puts "Variantes disponibles : #{NotoCjk::VARIANTS.map(&.to_s).join(", ")}"
 when "purge"
-  count = CrystalNotoCJK::Cache.purge(system: system_cache)
-  puts "Cache vidé : #{count} fichier(s) supprimé(s) dans #{CrystalNotoCJK::Cache.dir(system: system_cache)}"
+  count = NotoCjk::Cache.purge(system: system_cache)
+  puts "Cache vidé : #{count} fichier(s) supprimé(s) dans #{NotoCjk::Cache.dir(system: system_cache)}"
 else
   STDERR.puts "Erreur : sous-commande inconnue « #{positional.first} »"
   STDERR.puts parser

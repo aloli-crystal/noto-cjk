@@ -1,7 +1,7 @@
 require "http/client"
 require "uri"
 
-module CrystalNotoCJK
+module NotoCjk
   # On-disk cache of Noto Sans CJK fonts. Each variant is a single
   # ~16-20 MB OpenType file ; we don't embed it in dependent
   # binaries (way too heavy), so the user pulls only the variant(s)
@@ -12,35 +12,35 @@ module CrystalNotoCJK
   # 1. **From your own Crystal app, via the API** :
   #
   #    ```
-  # require "crystal-noto-cjk"
+  # require "noto-cjk"
   #
   # # Pull the Simplified Chinese variant (default).
-  # CrystalNotoCJK::Cache.pull(variants: [:sc])
+  # NotoCjk::Cache.pull(variants: [:sc])
   #
   # # Pull both Simplified Chinese and Japanese.
-  # CrystalNotoCJK::Cache.pull(variants: [:sc, :jp])
+  # NotoCjk::Cache.pull(variants: [:sc, :jp])
   #
   # # Pull all four variants (SC + TC + JP + KR, ≈ 80 MB).
-  # CrystalNotoCJK::Cache.pull(variants: CrystalNotoCJK::VARIANTS)
+  # NotoCjk::Cache.pull(variants: NotoCjk::VARIANTS)
   #
   # # Override the source — useful for an internal mirror.
-  # CrystalNotoCJK::Cache.pull(variants: [:sc],
+  # NotoCjk::Cache.pull(variants: [:sc],
   #   source: "https://nas.aloli.local/noto-cjk")
   #
   # # Inspection
-  # CrystalNotoCJK::Cache.populated?(:sc) # => true / false
-  # CrystalNotoCJK::Cache.path(:sc)       # => "/Users/.../NotoSansCJKsc-Regular.otf" or nil
-  # CrystalNotoCJK::Cache.installed       # => [:sc, :jp]
+  # NotoCjk::Cache.populated?(:sc) # => true / false
+  # NotoCjk::Cache.path(:sc)       # => "/Users/.../NotoSansCJKsc-Regular.otf" or nil
+  # NotoCjk::Cache.installed       # => [:sc, :jp]
   #    ```
   #
   # 2. **From the command line** :
   #
-  #        $ crystal-noto-cjk pull                          # default = sc
-  #        $ crystal-noto-cjk pull --variant jp
-  #        $ crystal-noto-cjk pull --variant sc,jp
-  #        $ crystal-noto-cjk pull --variant all
-  #        $ crystal-noto-cjk pull --system                 # /var/cache/...
-  #        $ crystal-noto-cjk pull --source https://...     # custom mirror
+  #        $ noto-cjk pull                          # default = sc
+  #        $ noto-cjk pull --variant jp
+  #        $ noto-cjk pull --variant sc,jp
+  #        $ noto-cjk pull --variant all
+  #        $ noto-cjk pull --system                 # /var/cache/...
+  #        $ noto-cjk pull --source https://...     # custom mirror
   module Cache
     # Default upstream source. Switch via the `source:` keyword to
     # pull from a private mirror.
@@ -64,15 +64,15 @@ module CrystalNotoCJK
         return override
       end
       if system
-        "/var/cache/crystal-noto-cjk"
+        "/var/cache/noto-cjk"
       elsif (xdg = ENV["XDG_CACHE_HOME"]?)
-        File.join(xdg, "crystal-noto-cjk")
+        File.join(xdg, "noto-cjk")
       else
         case Crystal::DESCRIPTION
         when /darwin/, /macos/
-          File.join(Path.home.to_s, "Library", "Caches", "crystal-noto-cjk")
+          File.join(Path.home.to_s, "Library", "Caches", "noto-cjk")
         else
-          File.join(Path.home.to_s, ".cache", "crystal-noto-cjk")
+          File.join(Path.home.to_s, ".cache", "noto-cjk")
         end
       end
     end

@@ -3,19 +3,38 @@
 :toc-title: Versions
 :toclevels: 2
 
+== v0.1.2 — 2026-04-29
+
+=== Modifié
+
+* **Module interne renommé** `CrystalNotoCJK` → `NotoCjk` (convention
+  Aloli : retrait du préfixe `Crystal` et CamelCase strict — pas de
+  préservation d'acronyme, pour cohérence dans tout l'écosystème).
+* Dossier source `src/crystal_noto_cjk/` → `src/noto_cjk/` et entrée
+  consolidée dans `src/noto-cjk.cr` (point d'entrée canonique
+  correspondant à `require "noto-cjk"`). Chemins `require` internes
+  adaptés.
+* Binaire CLI inchangé.
+
+=== Note pour les consommateurs
+
+Le code externe qui référençait `CrystalNotoCJK::*` (par ex.
+`crystal-asciidoctor-pdf`) doit être mis à jour vers `NotoCjk::*` et
+re-épinglé sur `~> 0.1.2`.
+
 == v0.1.1 — 2026-04-29
 
 === Modifié
 
-* **Repo GitHub renommé** `aloli-crystal/crystal-noto-cjk` →
+* **Repo GitHub renommé** `aloli-crystal/noto-cjk` →
   `aloli-crystal/noto-cjk` (convention de nommage Aloli : les
   créations originales abandonnent le préfixe `crystal-`). Les anciens
   liens redirigent automatiquement.
-* Champ `name:` du `shard.yml` mis à jour de `crystal-noto-cjk` à `noto-cjk`.
-* Cible de compilation et binaire CLI renommés `crystal-noto-cjk` →
+* Champ `name:` du `shard.yml` mis à jour de `noto-cjk` à `noto-cjk`.
+* Cible de compilation et binaire CLI renommés `noto-cjk` →
   `noto-cjk` (`shards build noto-cjk` → `bin/noto-cjk`).
 * Nouveau fichier d'entrée shim `src/noto-cjk.cr` (charge
-  `src/crystal_noto_cjk.cr`) ; `require "crystal-noto-cjk"` devient
+  `src/crystal_noto_cjk.cr`) ; `require "noto-cjk"` devient
   `require "noto-cjk"`.
 
 == v0.1.0 — 2026-04-26
@@ -32,7 +51,7 @@ Noto Sans CJK.
 * **Wrappers haut niveau** : `CrystalNotoCJK.font_path`
   (n'importe quelle variante installée),
   `CrystalNotoCJK.font_path(:jp)` (spécifique).
-* **CLI** `bin/crystal-noto-cjk` avec sous-commandes `pull`,
+* **CLI** `bin/noto-cjk` avec sous-commandes `pull`,
   `info`, `purge` et drapeaux courts/longs `-V/--variant`,
   `-s/--source`, `--system`, `-v/--version`, `-h/--help`.
 * **Quatre variantes supportées** : `:sc` (Chinois Simplifié,
