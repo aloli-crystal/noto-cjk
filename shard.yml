@@ -1,5 +1,5 @@
-name: crystal-noto-cjk
-version: 0.1.0
+name: noto-cjk
+version: 0.1.1
 
 description: |
   CJK glyph coverage for Crystal — provides Noto Sans CJK fonts
@@ -19,7 +19,7 @@ development_dependencies:
     version: "~> 1.6"
 
 targets:
-  crystal-noto-cjk:
+  noto-cjk:
     main: src/cli.cr
 
 crystal: ">= 1.19.0"

@@ -3,6 +3,19 @@
 :toc-title: Versions
 :toclevels: 2
 
+== v0.1.1 — 2026-04-29
+
+=== Changed
+
+* **GitHub repository renamed** from `aloli-crystal/crystal-noto-cjk`
+  to `aloli-crystal/noto-cjk` (Aloli naming convention: original
+  creations drop the `crystal-` prefix). Old links redirect automatically.
+* `name:` field in `shard.yml` updated from `crystal-noto-cjk` to `noto-cjk`.
+* Build target / CLI binary renamed `crystal-noto-cjk` → `noto-cjk`
+  (`shards build noto-cjk` → `bin/noto-cjk`).
+* New entry-point shim `src/noto-cjk.cr` (loads `src/crystal_noto_cjk.cr`);
+  `require "crystal-noto-cjk"` → `require "noto-cjk"`.
+
 == v0.1.0 — 2026-04-26
 
 First public release. CJK glyph coverage for Crystal projects via

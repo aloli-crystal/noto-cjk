@@ -1,4 +1,4 @@
-= crystal-noto-cjk
+= noto-cjk
 :toc: macro
 :toclevels: 2
 
@@ -66,8 +66,8 @@ shard accepte n'importe quelle combinaison.
 [source,yaml]
 ----
 dependencies:
-  crystal-noto-cjk:
-    github: aloli-crystal/crystal-noto-cjk
+  noto-cjk:
+    github: aloli-crystal/noto-cjk
     version: "~> 0.1"
 ----
 
@@ -79,7 +79,7 @@ uniquement quand vous le demandez.
 
 [source,crystal]
 ----
-require "crystal-noto-cjk"
+require "noto-cjk"
 
 # === Premier setup ===
 # Télécharger le Chinois Simplifié (défaut, ≈ 16 Mo).
@@ -119,34 +119,34 @@ end
 [source,shell]
 ----
 # Compiler le binaire une fois.
-shards build --release crystal-noto-cjk
+shards build --release noto-cjk
 
 # Télécharger la variante Chinois Simplifié par défaut.
-crystal-noto-cjk pull
+noto-cjk pull
 
 # Télécharger Japonais uniquement.
-crystal-noto-cjk pull --variant jp
+noto-cjk pull --variant jp
 
 # Télécharger Chinois Simplifié et Japonais.
-crystal-noto-cjk pull --variant sc,jp
+noto-cjk pull --variant sc,jp
 
 # Télécharger les 4 variantes (~ 80 Mo).
-crystal-noto-cjk pull --variant all
+noto-cjk pull --variant all
 
 # Utiliser un miroir personnalisé.
-crystal-noto-cjk pull --source https://votre.miroir/noto-cjk
+noto-cjk pull --source https://votre.miroir/noto-cjk
 
 # Cache système.
-crystal-noto-cjk pull --system
+noto-cjk pull --system
 
 # Inspection.
-crystal-noto-cjk info
-# Emplacement : /Users/.../Library/Caches/crystal-noto-cjk
+noto-cjk info
+# Emplacement : /Users/.../Library/Caches/noto-cjk
 # Variantes installées : sc, jp
 # Variantes disponibles : sc, tc, jp, kr
 
 # Vider.
-crystal-noto-cjk purge
+noto-cjk purge
 ----
 
 === Emplacement du cache
@@ -156,13 +156,13 @@ crystal-noto-cjk purge
 | OS / mode | Chemin par défaut
 
 | macOS (utilisateur)
-| `~/Library/Caches/crystal-noto-cjk/`
+| `~/Library/Caches/noto-cjk/`
 
 | Linux/FreeBSD (utilisateur)
-| `$XDG_CACHE_HOME/crystal-noto-cjk/` (défaut `~/.cache/crystal-noto-cjk/`)
+| `$XDG_CACHE_HOME/noto-cjk/` (défaut `~/.cache/noto-cjk/`)
 
 | Tout (système via `--system`)
-| `/var/cache/crystal-noto-cjk/`
+| `/var/cache/noto-cjk/`
 
 | Tout (surcharge)
 | variable d'env `$CRYSTAL_NOTO_CJK_CACHE_DIR`

@@ -1,4 +1,4 @@
-= crystal-noto-cjk
+= noto-cjk
 :toc: macro
 :toclevels: 2
 
@@ -61,8 +61,8 @@ with any combination.
 [source,yaml]
 ----
 dependencies:
-  crystal-noto-cjk:
-    github: aloli-crystal/crystal-noto-cjk
+  noto-cjk:
+    github: aloli-crystal/noto-cjk
     version: "~> 0.1"
 ----
 
@@ -73,7 +73,7 @@ downloaded into the cache only when you ask for them.
 
 [source,crystal]
 ----
-require "crystal-noto-cjk"
+require "noto-cjk"
 
 # === First-time setup ===
 # Download Simplified Chinese (default, ≈ 16 MB).
@@ -113,34 +113,34 @@ end
 [source,shell]
 ----
 # Build the binary once.
-shards build --release crystal-noto-cjk
+shards build --release noto-cjk
 
 # Pull the default Simplified Chinese variant.
-crystal-noto-cjk pull
+noto-cjk pull
 
 # Pull Japanese only.
-crystal-noto-cjk pull --variant jp
+noto-cjk pull --variant jp
 
 # Pull both Simplified Chinese and Japanese.
-crystal-noto-cjk pull --variant sc,jp
+noto-cjk pull --variant sc,jp
 
 # Pull all four variants (~ 80 MB).
-crystal-noto-cjk pull --variant all
+noto-cjk pull --variant all
 
 # Use a custom mirror.
-crystal-noto-cjk pull --source https://your.mirror/noto-cjk
+noto-cjk pull --source https://your.mirror/noto-cjk
 
 # System-wide cache.
-crystal-noto-cjk pull --system
+noto-cjk pull --system
 
 # Inspect.
-crystal-noto-cjk info
-# Emplacement : /Users/.../Library/Caches/crystal-noto-cjk
+noto-cjk info
+# Emplacement : /Users/.../Library/Caches/noto-cjk
 # Variantes installées : sc, jp
 # Variantes disponibles : sc, tc, jp, kr
 
 # Wipe.
-crystal-noto-cjk purge
+noto-cjk purge
 ----
 
 === Cache location
@@ -150,13 +150,13 @@ crystal-noto-cjk purge
 | OS / mode | Default path
 
 | macOS (user)
-| `~/Library/Caches/crystal-noto-cjk/`
+| `~/Library/Caches/noto-cjk/`
 
 | Linux/FreeBSD (user)
-| `$XDG_CACHE_HOME/crystal-noto-cjk/` (default `~/.cache/crystal-noto-cjk/`)
+| `$XDG_CACHE_HOME/noto-cjk/` (default `~/.cache/noto-cjk/`)
 
 | Any (system-wide via `--system`)
-| `/var/cache/crystal-noto-cjk/`
+| `/var/cache/noto-cjk/`
 
 | Any (override)
 | `$CRYSTAL_NOTO_CJK_CACHE_DIR` env var
