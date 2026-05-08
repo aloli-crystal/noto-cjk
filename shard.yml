@@ -1,5 +1,5 @@
 name: noto-cjk
-version: 0.1.3
+version: 0.1.4
 
 description: |
   CJK glyph coverage for Crystal — provides Noto Sans CJK fonts

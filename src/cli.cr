@@ -1,5 +1,5 @@
 require "option_parser"
-require "./noto_cjk"
+require "./noto-cjk"
 
 # noto-cjk CLI — manages the on-disk Noto Sans CJK cache.
 #
@@ -85,6 +85,32 @@ def parse_variants(arg : String) : Array(Symbol)
 end
 
 case positional.first
+when "help", "-h", "--help"
+  # UX standard `<cli> help [<sub>]` — cf. note mémoire ALOLI
+  # `feedback_cli_help_subcommand.md`. Sans argument c'est l'aide
+  # globale. Avec argument on filtre sur la sous-commande demandée.
+  sub = positional[1]?
+  if sub.nil? || sub.empty?
+    puts parser
+    exit 0
+  end
+  valid_subs = %w(pull info purge)
+  unless valid_subs.includes?(sub.downcase)
+    STDERR.puts "Aide indisponible pour « #{sub} » (sous-commandes : #{valid_subs.join(", ")})."
+    STDERR.puts "Utilisez `noto-cjk help` pour l'aide globale."
+    exit 1
+  end
+  full = parser.to_s
+  puts full
+  puts ""
+  puts "─── Focus : #{sub} ───"
+  full.lines.each_with_index do |line, i|
+    if line.includes?("  #{sub}  ") || line.lstrip.starts_with?("#{sub} ")
+      full.lines[i, 6].each { |l| puts l.rstrip }
+      break
+    end
+  end
+  exit 0
 when "pull"
   variants = parse_variants(variant_arg)
   unknown = variants - NotoCjk::VARIANTS
