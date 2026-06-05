@@ -3,6 +3,18 @@
 :toc-title: Versions
 :toclevels: 2
 
+== v0.1.5 — 2026-06-05
+
+=== Modifié
+
+* **Le focus de `help <sub>` est désormais cantonné à la section.** Le
+  filtre `help <sub>` (ajouté en v0.1.4) parcourait tout le banner USAGE
+  et pouvait tomber sur une ligne antérieure où le nom de la
+  sous-commande apparaît (ligne d'usage, description d'une option). Il ne
+  commence maintenant à chercher qu'à l'intérieur de la section
+  « Sous-commandes : », donc `noto-cjk help pull` pointe de façon fiable
+  sur l'entrée de la sous-commande `pull`.
+
 == v0.1.2 — 2026-04-29
 
 === Modifié

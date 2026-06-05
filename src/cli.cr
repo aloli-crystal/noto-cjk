@@ -104,7 +104,13 @@ when "help", "-h", "--help"
   puts full
   puts ""
   puts "─── Focus : #{sub} ───"
+  # Restrict the focus search to the « Sous-commandes : » section so a
+  # sub name appearing earlier (usage line, an option's description)
+  # can't steal the match.
+  in_subcommands = false
   full.lines.each_with_index do |line, i|
+    in_subcommands = true if line.includes?("Sous-commandes :")
+    next unless in_subcommands
     if line.includes?("  #{sub}  ") || line.lstrip.starts_with?("#{sub} ")
       full.lines[i, 6].each { |l| puts l.rstrip }
       break
