@@ -81,7 +81,7 @@ module NotoCjk
     # `nil` when the variant is not in the cache.
     def self.path(variant : Symbol, system : Bool = false) : String?
       info = VARIANT_FILES[variant]?
-      return nil unless info
+      return unless info
       file_path = File.join(dir(system: system), info[:file])
       File.exists?(file_path) ? file_path : nil
     end

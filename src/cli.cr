@@ -94,7 +94,7 @@ when "help", "-h", "--help"
     puts parser
     exit 0
   end
-  valid_subs = %w(pull info purge)
+  valid_subs = %w[pull info purge]
   unless valid_subs.includes?(sub.downcase)
     STDERR.puts "Aide indisponible pour « #{sub} » (sous-commandes : #{valid_subs.join(", ")})."
     STDERR.puts "Utilisez `noto-cjk help` pour l'aide globale."
